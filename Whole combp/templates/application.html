@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Application - {{ job_info.company }}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+        }
+        .page-container { max-width: 1400px; margin: 0 auto; padding: 30px 20px; }
+        
+        .controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .controls-header h1 {
+            font-size: 1.4rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary { background: #1a1a1a; color: #fff; }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+        .btn-pdf { background: #c0392b; color: #fff; }
+        .btn:hover { transform: translateY(-2px); }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .tab {
+            padding: 12px 30px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: #888;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .tab.active {
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            color: #fff;
+            border-color: transparent;
+        }
+
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 25px;
+        }
+
+        .document-container {
+            background: #fff;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+            padding: 60px 70px;
+            color: #1a1a1a;
+            min-height: 900px;
+        }
+
+        /* CV Styles */
+        .cv-header { margin-bottom: 40px; }
+        .cv-name {
+            font-size: 48px;
+            font-weight: 900;
+            color: #1a1a1a;
+            letter-spacing: -2px;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+        .cv-title {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+        .cv-contact {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        .cv-section { margin-bottom: 35px; }
+        .cv-section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1.5px solid #1a1a1a;
+        }
+        .cv-section-text {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        /* Cover Letter Styles */
+        .letter-date { font-size: 14px; color: #333; margin-bottom: 20px; }
+        .letter-recipient { font-size: 14px; color: #333; line-height: 1.6; margin-bottom: 30px; }
+        .letter-greeting { font-size: 15px; font-weight: 600; color: #1a1a1a; margin-bottom: 20px; }
+        .letter-body { font-size: 14px; line-height: 1.9; color: #333; text-align: justify; }
+        .letter-body p { margin-bottom: 20px; }
+        .letter-closing { margin-top: 35px; font-size: 14px; color: #333; }
+        .letter-signature { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-top: 30px; }
+
+        /* Sidebar */
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 25px;
+            color: #fff;
+        }
+        .sidebar-card h3 {
+            font-size: 1rem;
+            color: #00d4ff;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .job-info p { font-size: 0.9rem; margin-bottom: 8px; color: #c5dff0; }
+        .job-info strong { color: #fff; }
+
+        .match-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(123, 44, 191, 0.1));
+            text-align: center;
+        }
+        .match-score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(#00d4ff calc(var(--score) * 3.6deg), rgba(255,255,255,0.1) 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            position: relative;
+        }
+        .match-score-circle::before {
+            content: '';
+            width: 95px;
+            height: 95px;
+            background: #1a2a4a;
+            border-radius: 50%;
+            position: absolute;
+        }
+        .match-score-number {
+            position: relative;
+            font-size: 28px;
+            font-weight: 800;
+            color: #00d4ff;
+        }
+        .match-label { font-size: 0.9rem; color: #8bb8d9; margin-bottom: 20px; }
+
+        .skills-section { margin-bottom: 15px; text-align: left; }
+        .skills-section h4 {
+            font-size: 0.85rem;
+            color: #8bb8d9;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .skill-tag {
+            display: inline-block;
+            padding: 5px 12px;
+            background: rgba(0, 212, 255, 0.15);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 3px;
+            color: #00d4ff;
+        }
+        .skill-tag.missing {
+            background: rgba(255, 152, 0, 0.15);
+            color: #ff9800;
+        }
+
+        .recommendation {
+            font-size: 0.85rem;
+            color: #c5dff0;
+            line-height: 1.6;
+            padding: 15px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .action-btn {
+            background: #1a1a1a;
+            color: #fff;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+        }
+        .action-btn:hover { background: #333; }
+        .action-btn.pdf-btn { background: #c0392b; }
+        .action-btn.pdf-btn:hover { background: #a93226; }
+
+        .copy-success {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1a1a1a;
+            color: #fff;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        @media (max-width: 1000px) {
+            .content-wrapper { grid-template-columns: 1fr; }
+            .document-container { padding: 40px 30px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="controls-header">
+            <h1><i class="fas fa-briefcase"></i> Application for {{ job_info.company }}</h1>
+            <div class="header-actions">
+                <button onclick="downloadCurrentDocument()" class="btn btn-pdf">
+                    <i class="fas fa-file-pdf"></i> Download PDF
+                </button>
+                <a href="{{ url_for('jobs_manager') }}" class="btn btn-secondary">
+                    <i class="fas fa-list"></i> All Jobs
+                </a>
+                <a href="{{ url_for('reset') }}" class="btn btn-secondary">
+                    <i class="fas fa-redo"></i> Start Over
+                </a>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('cv')">
+                <i class="fas fa-file-alt"></i> Tailored CV
+            </div>
+            <div class="tab" onclick="switchTab('cover')">
+                <i class="fas fa-envelope"></i> Cover Letter
+            </div>
+        </div>
+
+        <div class="content-wrapper">
+            <div>
+                <!-- CV Tab -->
+                <div class="tab-content active" id="cv-tab">
+                    <div class="document-container" id="cvDocument">
+                        <div style="white-space: pre-wrap; font-size: 14px; line-height: 1.8;">{{ cv }}</div>
+                    </div>
+                </div>
+
+                <!-- Cover Letter Tab -->
+                <div class="tab-content" id="cover-tab">
+                    <div class="document-container" id="letterDocument">
+                        <div class="letter-date" id="currentDate"></div>
+                        <div class="letter-recipient">
+                            Hiring Manager<br>
+                            {{ job_info.company }}<br>
+                        </div>
+                        <div class="letter-greeting">Dear Hiring Manager,</div>
+                        <div class="letter-body" id="letterBody">{{ cover_letter }}</div>
+                        <div class="letter-closing">Sincerely,</div>
+                        <div class="letter-signature"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="sidebar-card">
+                    <h3><i class="fas fa-briefcase"></i> Job Details</h3>
+                    <div class="job-info">
+                        <p><strong>Position:</strong> {{ job_info.title }}</p>
+                        <p><strong>Company:</strong> {{ job_info.company }}</p>
+                    </div>
+                </div>
+
+                <div class="sidebar-card match-card">
+                    <h3><i class="fas fa-chart-line"></i> Match Analysis</h3>
+                    
+                    <div class="match-score-circle" style="--score: {{ match_result.match_score|default(75) }}">
+                        <span class="match-score-number">{{ match_result.match_score|default(75) }}%</span>
+                    </div>
+                    <div class="match-label">Overall Match Score</div>
+
+                    <!-- Detailed Compatibility Breakdown -->
+                    {% if match_result.compatibility_breakdown %}
+                    <div style="margin: 20px 0; text-align: left;">
+                        <h4 style="font-size: 0.85rem; color: #8bb8d9; margin-bottom: 12px;">
+                            <i class="fas fa-chart-bar"></i> Compatibility Breakdown
+                        </h4>
+                        {% for category, score in match_result.compatibility_breakdown.items() %}
+                        <div style="margin-bottom: 12px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span style="font-size: 0.8rem; color: #c5dff0;">{{ category.replace('_', ' ').title() }}</span>
+                                <span style="font-size: 0.8rem; color: #00d4ff; font-weight: 600;">{{ score }}%</span>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.1); height: 6px; border-radius: 3px; overflow: hidden;">
+                                <div style="background: linear-gradient(90deg, #00d4ff, #7b2cbf); height: 100%; width: {{ score }}%; transition: width 0.5s ease;"></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    {% if match_result.matched_skills %}
+                    <div class="skills-section">
+                        <h4><i class="fas fa-check-circle" style="color: #00d4ff;"></i> Matched Skills</h4>
+                        <div>
+                            {% for skill in match_result.matched_skills %}
+                            <span class="skill-tag">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if match_result.missing_skills %}
+                    <div class="skills-section">
+                        <h4><i class="fas fa-exclamation-circle" style="color: #ff9800;"></i> Skills to Develop</h4>
+                        <div>
+                            {% for skill in match_result.missing_skills %}
+                            <span class="skill-tag missing">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if match_result.key_requirements_met %}
+                    <div class="skills-section">
+                        <h4><i class="fas fa-clipboard-check" style="color: #4caf50;"></i> Requirements Met</h4>
+                        <div style="font-size: 0.8rem; color: #c5dff0; line-height: 1.6;">
+                            <ul style="margin-left: 20px; margin-top: 8px;">
+                                {% for req in match_result.key_requirements_met %}
+                                <li style="margin-bottom: 5px;">{{ req }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if match_result.recommendation %}
+                    <div class="recommendation">
+                        <strong>Recommendation:</strong> {{ match_result.recommendation }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="sidebar-card">
+                    <h3><i class="fas fa-download"></i> Actions</h3>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <button class="action-btn pdf-btn" onclick="downloadCurrentDocument()">
+                            <i class="fas fa-file-pdf"></i> Download PDF
+                        </button>
+                        <button class="action-btn" onclick="copyCurrentDocument()">
+                            <i class="fas fa-copy"></i> Copy Text
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="copy-success" id="copySuccess">
+        <i class="fas fa-check"></i> Copied to clipboard!
+    </div>
+
+    <script>
+        let currentTab = 'cv';
+
+        // Set current date
+        const today = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('currentDate').textContent = today.toLocaleDateString('en-US', options);
+
+        // Format letter body
+        document.addEventListener('DOMContentLoaded', function() {
+            const letterBody = document.getElementById('letterBody');
+            if (letterBody) {
+                let content = letterBody.innerHTML;
+                content = content.replace(/Dear\s+(Hiring Manager|Sir|Madam|Sir\/Madam)[,.]?\s*/gi, '');
+                content = content.replace(/(Sincerely|Best regards|Kind regards|Yours truly)[,.]?\s*$/gi, '');
+                
+                const paragraphs = content.split(/\n\n+/).filter(p => p.trim());
+                if (paragraphs.length > 1) {
+                    content = paragraphs.map(p => `<p>${p.trim()}</p>`).join('');
+                } else {
+                    content = `<p>${content}</p>`;
+                }
+                letterBody.innerHTML = content;
+            }
+        });
+
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // Update tabs
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.closest('.tab').classList.add('active');
+            
+            // Update content
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(tab + '-tab').classList.add('active');
+        }
+
+        function downloadCurrentDocument() {
+            const element = currentTab === 'cv' ? 
+                document.getElementById('cvDocument') : 
+                document.getElementById('letterDocument');
+            
+            const company = '{{ job_info.company }}'.replace(/[^a-zA-Z0-9]/g, '_');
+            const docType = currentTab === 'cv' ? 'CV' : 'Cover_Letter';
+            
+            const opt = {
+                margin: 10,
+                filename: `${docType}_${company}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save();
+        }
+
+        function copyCurrentDocument() {
+            const element = currentTab === 'cv' ? 
+                document.getElementById('cvDocument') : 
+                document.getElementById('letterDocument');
+            
+            const text = element.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const msg = document.getElementById('copySuccess');
+                msg.style.display = 'block';
+                setTimeout(() => { msg.style.display = 'none'; }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

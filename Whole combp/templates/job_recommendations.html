@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Recommendations</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        h1 {
+            font-size: 2rem;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            color: #fff;
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .btn-success {
+            background: #4caf50;
+            color: #fff;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .info-banner {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        .info-banner i { font-size: 2rem; color: #00d4ff; flex-shrink: 0; }
+        .info-banner-content h2 {
+            color: #00d4ff;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        .info-banner-content p {
+            color: #c0c0c0;
+            line-height: 1.6;
+        }
+        
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 25px;
+        }
+        
+        .job-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+        
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+        
+        .job-info { flex: 1; }
+        .job-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+        .job-company {
+            color: #00d4ff;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .match-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .match-high {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+            border: 1px solid #4caf50;
+        }
+        .match-medium {
+            background: rgba(255, 152, 0, 0.2);
+            color: #ff9800;
+            border: 1px solid #ff9800;
+        }
+        .match-low {
+            background: rgba(255, 82, 82, 0.2);
+            color: #ff5252;
+            border: 1px solid #ff5252;
+        }
+        
+        .job-description {
+            color: #c0c0c0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .job-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .skill-tag {
+            padding: 5px 12px;
+            background: rgba(0, 212, 255, 0.15);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #00d4ff;
+        }
+        
+        .job-reason {
+            background: rgba(123, 44, 191, 0.1);
+            border-left: 3px solid #7b2cbf;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .job-reason p {
+            color: #c5dff0;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        
+        .job-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .job-actions .btn {
+            flex: 1;
+            padding: 10px 15px;
+            font-size: 0.85rem;
+            justify-content: center;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1a1a1a;
+            color: #fff;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        .toast.success {
+            background: #4caf50;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #444;
+        }
+        
+        @media (max-width: 768px) {
+            header { flex-direction: column; text-align: center; }
+            .jobs-grid { grid-template-columns: 1fr; }
+            .job-header { flex-direction: column; }
+            .match-badge { width: 100%; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-lightbulb"></i> Job Recommendations</h1>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <a href="{{ url_for('jobs_manager') }}" class="btn btn-secondary">
+                    <i class="fas fa-list"></i> My Saved Jobs
+                </a>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                    <i class="fas fa-dashboard"></i> Dashboard
+                </a>
+            </div>
+        </header>
+        
+        <div class="info-banner">
+            <i class="fas fa-robot"></i>
+            <div class="info-banner-content">
+                <h2>AI-Powered Job Matching</h2>
+                <p>Based on your CV, skills, and experience, we've found jobs that match your profile. Jobs are ranked by compatibility score. Click "Add to My Jobs" to save positions you're interested in.</p>
+            </div>
+        </div>
+        
+        {% if recommended_jobs %}
+        <div class="jobs-grid">
+            {% for job in recommended_jobs %}
+            <div class="job-card" id="job-card-{{ loop.index0 }}">
+                <div class="job-header">
+                    <div class="job-info">
+                        <div class="job-title">{{ job.title }}</div>
+                        <div class="job-company">
+                            <i class="fas fa-building"></i> {{ job.company }}
+                        </div>
+                    </div>
+                    
+                    {% set score = job.match_score|default(75) %}
+                    <div class="match-badge {% if score >= 85 %}match-high{% elif score >= 70 %}match-medium{% else %}match-low{% endif %}">
+                        {{ score }}% Match
+                    </div>
+                </div>
+                
+                <div class="job-description">{{ job.description }}</div>
+                
+                {% if job.key_skills %}
+                <div class="job-skills">
+                    {% for skill in job.key_skills %}
+                    <span class="skill-tag">{{ skill }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                {% if job.reason %}
+                <div class="job-reason">
+                    <p><i class="fas fa-info-circle"></i> <strong>Why this fits:</strong> {{ job.reason }}</p>
+                </div>
+                {% endif %}
+                
+                <div class="job-actions">
+                    <button class="btn btn-success" onclick="addJob({{ loop.index0 }})" id="add-btn-{{ loop.index0 }}">
+                        <i class="fas fa-plus"></i> Add to My Jobs
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-search"></i>
+            <h3>No recommendations available</h3>
+            <p>Please make sure you have a CV generated with skills and experience</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="toast" id="toast"></div>
+    
+    <script>
+        const jobs = {{ recommended_jobs|tojson }};
+        
+        function addJob(index) {
+            const job = jobs[index];
+            const button = document.getElementById(`add-btn-${index}`);
+            
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+            
+            fetch('/jobs/add-recommended', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    title: job.title,
+                    company: job.company,
+                    description: job.description,
+                    match_score: job.match_score
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    button.innerHTML = '<i class="fas fa-check"></i> Added!';
+                    button.classList.remove('btn-success');
+                    button.classList.add('btn-secondary');
+                    showToast('Job added to your list!', 'success');
+                    
+                    setTimeout(() => {
+                        button.style.opacity = '0.6';
+                    }, 1000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-plus"></i> Add to My Jobs';
+                showToast('Error adding job', 'error');
+            });
+        }
+        
+        function showToast(message, type) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhance Your Profile</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        h1 {
+            font-size: 2rem;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            color: #fff;
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .btn-danger {
+            background: #c0392b;
+            color: #fff;
+            padding: 8px 15px;
+            font-size: 0.85rem;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .flash-messages { margin-bottom: 20px; }
+        .flash {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .flash.error {
+            background: rgba(255, 82, 82, 0.2);
+            border: 1px solid #ff5252;
+            color: #ff5252;
+        }
+        .flash.success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4caf50;
+            color: #4caf50;
+        }
+        
+        .info-banner {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        .info-banner i { font-size: 2rem; color: #00d4ff; flex-shrink: 0; }
+        .info-banner-content h2 {
+            color: #00d4ff;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        .info-banner-content p {
+            color: #c0c0c0;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+        .info-banner-content ul {
+            margin-top: 15px;
+            margin-left: 20px;
+            color: #c0c0c0;
+        }
+        .info-banner-content li {
+            margin-bottom: 5px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .upload-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .upload-section h3 {
+            color: #00d4ff;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .file-upload {
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .file-upload:hover {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.05);
+        }
+        .file-upload i { font-size: 3rem; color: #00d4ff; margin-bottom: 15px; }
+        .file-upload p { color: #a0a0a0; margin-bottom: 10px; }
+        .file-upload .formats { font-size: 0.85rem; color: #666; }
+        .file-upload input { display: none; }
+        .file-name {
+            margin-top: 15px;
+            padding: 10px 15px;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 8px;
+            color: #00d4ff;
+            display: none;
+        }
+        
+        .enhancements-section h3 {
+            color: #e0e0e0;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .enhancements-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .enhancement-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .enhancement-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+        
+        .enhancement-info {
+            flex: 1;
+        }
+        .enhancement-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #00d4ff;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .enhancement-date {
+            font-size: 0.85rem;
+            color: #888;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #444;
+        }
+        
+        .loading { display: none; text-align: center; padding: 20px; }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        @media (max-width: 768px) {
+            header { flex-direction: column; text-align: center; }
+            .card { padding: 25px; }
+            .enhancement-item { flex-direction: column; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-layer-group"></i> Enhance Your Profile</h1>
+            <div style="display: flex; gap: 10px;">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                    <i class="fas fa-dashboard"></i> Dashboard
+                </a>
+            </div>
+        </header>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <div class="info-banner">
+            <i class="fas fa-lightbulb"></i>
+            <div class="info-banner-content">
+                <h2>Add More Materials to Your Profile</h2>
+                <p>Upload additional lecture slides, project documents, certificates, or any other materials to enhance your CV with more skills and experiences.</p>
+                <ul>
+                    <li>Each upload will be analyzed for new skills and achievements</li>
+                    <li>Your CV will be automatically updated with relevant information</li>
+                    <li>All materials are saved and can be removed later if needed</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="upload-section">
+                <h3><i class="fas fa-cloud-upload-alt"></i> Upload New Material</h3>
+                <form action="{{ url_for('upload_enhancement') }}" method="POST" enctype="multipart/form-data" id="uploadForm">
+                    <div class="file-upload" id="dropZone">
+                        <i class="fas fa-file-upload"></i>
+                        <p>Drag & drop your file here or click to browse</p>
+                        <span class="formats">Supported: PDF, PPTX (Lecture slides, projects, certificates)</span>
+                        <input type="file" id="file" name="file" accept=".pdf,.pptx" required>
+                        <div class="file-name" id="fileName"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="submitBtn" style="margin-top: 20px; width: 100%;">
+                        <i class="fas fa-plus"></i> Add to Profile
+                    </button>
+                    <div class="loading" id="loading">
+                        <div class="spinner"></div>
+                        <p>Analyzing document and updating your profile...</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="enhancements-section">
+                <h3>
+                    <i class="fas fa-files"></i> 
+                    Added Materials ({{ enhancements|length }})
+                </h3>
+                
+                {% if enhancements %}
+                <div class="enhancements-list">
+                    {% for enhancement in enhancements %}
+                    <div class="enhancement-item" id="enhancement-{{ loop.index0 }}">
+                        <div class="enhancement-info">
+                            <div class="enhancement-name">
+                                <i class="fas fa-file-alt"></i>
+                                {{ enhancement.filename }}
+                            </div>
+                            <div class="enhancement-date">
+                                <i class="fas fa-clock"></i> Added {{ enhancement.date_added }}
+                            </div>
+                        </div>
+                        <button class="btn btn-danger" onclick="removeEnhancement({{ loop.index0 }})">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-folder-open"></i>
+                    <p>No additional materials added yet</p>
+                    <p style="font-size: 0.9rem; margin-top: 10px;">Upload documents above to enhance your profile</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('file');
+        const fileName = document.getElementById('fileName');
+        const form = document.getElementById('uploadForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+        
+        dropZone.addEventListener('click', () => fileInput.click());
+        
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#00d4ff';
+        });
+        
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+        });
+        
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                updateFileName();
+            }
+        });
+        
+        fileInput.addEventListener('change', updateFileName);
+        
+        function updateFileName() {
+            if (fileInput.files.length) {
+                fileName.textContent = fileInput.files[0].name;
+                fileName.style.display = 'block';
+            }
+        }
+        
+        form.addEventListener('submit', () => {
+            submitBtn.disabled = true;
+            submitBtn.style.display = 'none';
+            loading.style.display = 'block';
+        });
+        
+        function removeEnhancement(index) {
+            if (confirm('Are you sure you want to remove this material? Your CV will be regenerated without it.')) {
+                fetch(`/enhance-profile/remove/${index}`, {
+                    method: 'POST',
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        }
+    </script>
+</body>
+</html>
+        

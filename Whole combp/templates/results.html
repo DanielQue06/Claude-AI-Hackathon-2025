@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Generated CV</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+        }
+        .page-container { max-width: 950px; margin: 0 auto; padding: 30px 20px; }
+        
+        .controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .controls-header h1 {
+            font-size: 1.4rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary { background: #1a1a1a; color: #fff; }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+        .btn-pdf { background: #c0392b; color: #fff; }
+        .btn:hover { transform: translateY(-2px); }
+
+        /* CV Document */
+        .cv-document {
+            background: #fff;
+            max-width: 850px;
+            margin: 0 auto;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+            padding: 60px 70px;
+            color: #1a1a1a;
+        }
+
+        /* Header */
+        .cv-header { margin-bottom: 40px; }
+        .cv-name {
+            font-size: 48px;
+            font-weight: 900;
+            color: #1a1a1a;
+            letter-spacing: -2px;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+        .cv-title {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+        .cv-contact {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        /* Section */
+        .cv-section { margin-bottom: 35px; }
+        .cv-section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1.5px solid #1a1a1a;
+        }
+        .cv-section-text {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        /* Experience */
+        .exp-item { margin-bottom: 30px; }
+        .exp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 12px;
+        }
+        .exp-role {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        .exp-date {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+        .exp-bullets {
+            list-style-type: disc;
+            margin-left: 30px;
+            font-size: 14px;
+            color: #333;
+        }
+        .exp-bullets li {
+            margin-bottom: 8px;
+            line-height: 1.7;
+            padding-left: 5px;
+        }
+
+        /* Education */
+        .edu-item { margin-bottom: 22px; }
+        .edu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 5px;
+        }
+        .edu-school {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        .edu-date {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+        .edu-details {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Skills */
+        .skills-list {
+            list-style-type: disc;
+            margin-left: 30px;
+            font-size: 14px;
+            color: #333;
+        }
+        .skills-list li {
+            margin-bottom: 8px;
+            padding-left: 5px;
+            line-height: 1.6;
+        }
+
+        /* Certifications */
+        .cert-item { margin-bottom: 15px; }
+        .cert-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 3px;
+        }
+        .cert-desc {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Buttons */
+        .button-container {
+            text-align: center;
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .action-btn {
+            background: #1a1a1a;
+            color: #fff;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .action-btn:hover { background: #333; }
+        .action-btn.pdf-btn { background: #c0392b; }
+        .action-btn.pdf-btn:hover { background: #a93226; }
+
+        .copy-success {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1a1a1a;
+            color: #fff;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: none;
+        }
+
+        #cvRaw { display: none; }
+
+        @media print {
+            .page-container { padding: 0; }
+            .controls-header, .button-container { display: none; }
+            .cv-document { box-shadow: none; }
+        }
+
+        @media (max-width: 650px) {
+            .cv-document { padding: 40px 30px; }
+            .cv-name { font-size: 36px; }
+            .exp-header, .edu-header { flex-direction: column; gap: 2px; }
+            .controls-header { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="controls-header">
+    <h1><i class="fas fa-file-alt"></i> Your CV</h1>
+    <div class="header-actions">
+        <button onclick="downloadPDF()" class="btn btn-pdf">
+            <i class="fas fa-file-pdf"></i> Download PDF
+        </button>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+            <i class="fas fa-dashboard"></i> Dashboard
+        </a>
+        <a href="{{ url_for('cover_letter') }}" class="btn btn-secondary">
+            <i class="fas fa-envelope"></i> Cover Letter
+        </a>
+        <a href="{{ url_for('jobs_manager') }}" class="btn btn-secondary">
+            <i class="fas fa-briefcase"></i> Jobs
+        </a>
+        <a href="{{ url_for('reset') }}" class="btn btn-secondary">
+            <i class="fas fa-redo"></i> Start Over
+        </a>
+    </div>
+</div>
+
+        <div class="cv-document" id="cvDocument">
+            <!-- Header -->
+            <div class="cv-header">
+                <div class="cv-name">{{ user_info.name }}</div>
+                <div class="cv-title">{{ user_info.target_role or 'PROFESSIONAL' }}</div>
+                <div class="cv-contact">{% if user_info.phone %}{{ user_info.phone }} | {% endif %}{{ user_info.email }}</div>
+            </div>
+
+            <!-- Objective -->
+            <div class="cv-section">
+                <div class="cv-section-title">Objective</div>
+                <div class="cv-section-text" id="objectiveText"></div>
+            </div>
+
+            <!-- Experience -->
+            <div class="cv-section">
+                <div class="cv-section-title">Experience</div>
+                <div id="experienceContent"></div>
+            </div>
+
+            <!-- Projects -->
+            <div class="cv-section">
+                <div class="cv-section-title">Projects</div>
+                <div id="projectsContent"></div>
+            </div>
+
+            <!-- Education -->
+            <div class="cv-section">
+                <div class="cv-section-title">Education</div>
+                <div id="educationContent"></div>
+            </div>
+
+            <!-- Certifications -->
+            <div class="cv-section">
+                <div class="cv-section-title">Certifications</div>
+                <div id="certificationsContent"></div>
+            </div>
+
+            <!-- Skills -->
+            <div class="cv-section">
+                <div class="cv-section-title">Skills & abilities</div>
+                <ul class="skills-list" id="skillsContent"></ul>
+            </div>
+
+            <!-- Achievements -->
+            <div class="cv-section">
+                <div class="cv-section-title">Achievements</div>
+                <ul class="skills-list" id="achievementsContent"></ul>
+            </div>
+
+            <!-- Interests -->
+            <div class="cv-section">
+                <div class="cv-section-title">Interests</div>
+                <ul class="skills-list" id="interestsContent"></ul>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button class="action-btn pdf-btn" onclick="downloadPDF()">
+                <i class="fas fa-file-pdf"></i> Download as PDF
+            </button>
+            <button class="action-btn" onclick="copyCV()">
+                <i class="fas fa-copy"></i> Copy Text
+            </button>
+        </div>
+
+        <div id="cvRaw">{{ cv }}</div>
+    </div>
+
+    <div class="copy-success" id="copySuccess">
+        <i class="fas fa-check"></i> Copied to clipboard!
+    </div>
+
+    <script>
+        function downloadPDF() {
+            const element = document.getElementById('cvDocument');
+            const name = '{{ user_info.name }}'.replace(/\s+/g, '_') || 'CV';
+            
+            const opt = {
+                margin: 10,
+                filename: name + '_CV.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save();
+        }
+
+        function copyCV() {
+            const text = document.getElementById('cvRaw').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const msg = document.getElementById('copySuccess');
+                msg.style.display = 'block';
+                setTimeout(() => { msg.style.display = 'none'; }, 2000);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const raw = document.getElementById('cvRaw').innerText;
+
+            // Objective
+            let obj = "To obtain a challenging position in a dynamic and innovative organization where I can utilize my technical skills, analytical abilities, and passion for continuous learning to contribute to organizational success while advancing my professional development.";
+            const objMatch = raw.match(/(?:SUMMARY|PROFILE|OBJECTIVE)[:\s]*([\s\S]+?)(?=##|EXPERIENCE|SKILLS|EDUCATION|$)/i);
+            if (objMatch) {
+                obj = objMatch[1].replace(/\*\*/g,'').replace(/#/g,'').trim();
+                if (obj.length < 100) {
+                    obj += " Committed to delivering high-quality results and continuously improving processes through innovative solutions and collaborative teamwork.";
+                }
+            }
+            document.getElementById('objectiveText').textContent = obj;
+
+            // Experience
+            let expHTML = '';
+            const expMatch = raw.match(/(?:EXPERIENCE)[:\s]*([\s\S]+?)(?=##|EDUCATION|SKILLS|PROJECT|ACHIEVEMENT|CERTIFICATION|$)/i);
+            if (expMatch) {
+                const text = expMatch[1];
+                const lines = text.split('\n').filter(l => l.trim());
+                let currentTitle = '';
+                let bullets = [];
+
+                lines.forEach((line) => {
+                    line = line.replace(/\*\*/g,'').replace(/#/g,'').trim();
+                    if (line.startsWith('-') || line.startsWith('•')) {
+                        bullets.push(line.replace(/^[-•]\s*/, ''));
+                    } else if (line.length > 5) {
+                        if (currentTitle && bullets.length > 0) {
+                            expHTML += `
+                                <div class="exp-item">
+                                    <div class="exp-header">
+                                        <div class="exp-role">${currentTitle}</div>
+                                        <div class="exp-date">Present</div>
+                                    </div>
+                                    <ul class="exp-bullets">${bullets.map(b => `<li>${b}</li>`).join('')}</ul>
+                                </div>
+                            `;
+                        }
+                        currentTitle = line;
+                        bullets = [];
+                    }
+                });
+
+                if (currentTitle) {
+                    if (bullets.length === 0) {
+                        bullets.push('Contributed to team objectives and organizational goals');
+                        bullets.push('Collaborated with team members to deliver results');
+                    }
+                    expHTML += `
+                        <div class="exp-item">
+                            <div class="exp-header">
+                                <div class="exp-role">${currentTitle}</div>
+                                <div class="exp-date">Present</div>
+                            </div>
+                            <ul class="exp-bullets">${bullets.map(b => `<li>${b}</li>`).join('')}</ul>
+                        </div>
+                    `;
+                }
+            }
+            if (!expHTML) {
+                expHTML = `
+                    <div class="exp-item">
+                        <div class="exp-header">
+                            <div class="exp-role">Professional Experience</div>
+                            <div class="exp-date">Present</div>
+                        </div>
+                        <ul class="exp-bullets">
+                            <li>Experience details from your slides</li>
+                            <li>Demonstrated ability to work in team environments</li>
+                        </ul>
+                    </div>
+                `;
+            }
+            document.getElementById('experienceContent').innerHTML = expHTML;
+
+            // Projects
+            let projHTML = '';
+            const projMatch = raw.match(/(?:PROJECT)[:\s]*([\s\S]+?)(?=##|EDUCATION|SKILLS|ACHIEVEMENT|CERTIFICATION|$)/i);
+            if (projMatch) {
+                const lines = projMatch[1].split('\n').filter(l => l.trim() && !l.startsWith('#'));
+                let currentProj = '';
+                let bullets = [];
+
+                lines.forEach(line => {
+                    line = line.replace(/\*\*/g,'').trim();
+                    if (line.startsWith('-') || line.startsWith('•')) {
+                        bullets.push(line.replace(/^[-•]\s*/, ''));
+                    } else if (line.length > 5) {
+                        if (currentProj) {
+                            projHTML += `
+                                <div class="exp-item">
+                                    <div class="exp-role">${currentProj}</div>
+                                    ${bullets.length > 0 ? `<ul class="exp-bullets">${bullets.map(b => `<li>${b}</li>`).join('')}</ul>` : ''}
+                                </div>
+                            `;
+                        }
+                        currentProj = line;
+                        bullets = [];
+                    }
+                });
+
+                if (currentProj) {
+                    projHTML += `
+                        <div class="exp-item">
+                            <div class="exp-role">${currentProj}</div>
+                            ${bullets.length > 0 ? `<ul class="exp-bullets">${bullets.map(b => `<li>${b}</li>`).join('')}</ul>` : ''}
+                        </div>
+                    `;
+                }
+            }
+            if (!projHTML) {
+                projHTML = `
+                    <div class="exp-item">
+                        <div class="exp-role">Technical Projects</div>
+                        <ul class="exp-bullets">
+                            <li>Developed solutions based on course material</li>
+                            <li>Applied theoretical knowledge to practical scenarios</li>
+                        </ul>
+                    </div>
+                `;
+            }
+            document.getElementById('projectsContent').innerHTML = projHTML;
+
+            // Education
+            let eduHTML = '';
+            const eduMatch = raw.match(/(?:EDUCATION)[:\s]*([\s\S]+?)(?=##|SKILLS|ACHIEVEMENT|CERTIFICATION|PROJECT|$)/i);
+            if (eduMatch) {
+                const lines = eduMatch[1].split('\n').filter(l => l.trim() && !l.startsWith('#'));
+                lines.forEach(line => {
+                    const clean = line.replace(/\*\*/g,'').replace(/^[-•]\s*/,'').trim();
+                    if (clean.length > 3) {
+                        eduHTML += `
+                            <div class="edu-item">
+                                <div class="edu-header">
+                                    <div class="edu-school">${clean}</div>
+                                    <div class="edu-date">Present</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            }
+            if (!eduHTML) {
+                eduHTML = `
+                    <div class="edu-item">
+                        <div class="edu-header">
+                            <div class="edu-school">University Education</div>
+                            <div class="edu-date">Present</div>
+                        </div>
+                    </div>
+                `;
+            }
+            document.getElementById('educationContent').innerHTML = eduHTML;
+
+            // Certifications
+            let certHTML = '';
+            const certMatch = raw.match(/(?:CERTIFICATION|CERTIFICATE)[:\s]*([\s\S]+?)(?=##|SKILLS|ACHIEVEMENT|EDUCATION|$)/i);
+            if (certMatch) {
+                const lines = certMatch[1].split('\n').filter(l => l.trim() && !l.startsWith('#'));
+                lines.forEach(line => {
+                    const clean = line.replace(/\*\*/g,'').replace(/^[-•]\s*/,'').trim();
+                    if (clean.length > 3) {
+                        certHTML += `<div class="cert-item"><div class="cert-title">${clean}</div></div>`;
+                    }
+                });
+            }
+            if (!certHTML) {
+                certHTML = `<div class="cert-item"><div class="cert-title">Professional Certifications</div></div>`;
+            }
+            document.getElementById('certificationsContent').innerHTML = certHTML;
+
+            // Skills
+            let skillsHTML = '';
+            const skillsMatch = raw.match(/(?:SKILLS|ABILITIES)[:\s]*([\s\S]+?)(?=##|EDUCATION|EXPERIENCE|ACHIEVEMENT|CERTIFICATION|$)/i);
+            if (skillsMatch) {
+                const skills = skillsMatch[1].split(/[-•\n]/).map(s => s.replace(/\*\*/g,'').trim()).filter(s => s.length > 2 && s.length < 100);
+                skills.slice(0,12).forEach(skill => {
+                    skillsHTML += `<li>${skill}</li>`;
+                });
+            }
+            if (!skillsHTML) {
+                skillsHTML = `<li>Technical Skills</li><li>Problem Solving</li><li>Communication</li><li>Teamwork</li><li>Leadership</li>`;
+            }
+            document.getElementById('skillsContent').innerHTML = skillsHTML;
+
+            // Achievements
+            let achHTML = '';
+            const achMatch = raw.match(/(?:ACHIEVEMENT|ACCOMPLISHMENT)[:\s]*([\s\S]+?)(?=##|SKILLS|EDUCATION|CERTIFICATION|$)/i);
+            if (achMatch) {
+                const items = achMatch[1].split(/[-•\n]/).map(s => s.replace(/\*\*/g,'').trim()).filter(s => s.length > 5);
+                items.slice(0,6).forEach(item => {
+                    achHTML += `<li>${item}</li>`;
+                });
+            }
+            if (!achHTML) {
+                achHTML = `<li>Strong academic performance</li><li>Completed relevant coursework</li><li>Active in learning activities</li>`;
+            }
+            document.getElementById('achievementsContent').innerHTML = achHTML;
+
+            // Interests
+            document.getElementById('interestsContent').innerHTML = `<li>Technology and Innovation</li><li>Continuous Learning</li><li>Professional Development</li>`;
+        });
+    </script>
+</body>
+</html>

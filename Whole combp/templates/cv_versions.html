@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Version History</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        h1 {
+            font-size: 2rem;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            color: #fff;
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .flash-messages { margin-bottom: 20px; }
+        .flash {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .flash.success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4caf50;
+            color: #4caf50;
+        }
+        
+        .info-banner {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .info-banner p {
+            color: #c0c0c0;
+            line-height: 1.6;
+        }
+        
+        .versions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .version-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+        .version-card.active {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.08);
+        }
+        .version-card:hover {
+            border-color: rgba(0, 212, 255, 0.5);
+        }
+        
+        .version-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            gap: 20px;
+        }
+        
+        .version-info {
+            flex: 1;
+        }
+        .version-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00d4ff;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .current-badge {
+            background: #00d4ff;
+            color: #1a1a2e;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .version-description {
+            font-size: 1rem;
+            color: #e0e0e0;
+            margin-bottom: 5px;
+        }
+        .version-timestamp {
+            font-size: 0.85rem;
+            color: #888;
+        }
+        
+        .version-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .version-actions .btn {
+            padding: 10px 20px;
+            font-size: 0.85rem;
+        }
+        
+        .version-preview {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 15px;
+            max-height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        .version-preview::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.3));
+        }
+        .version-preview-text {
+            font-size: 0.85rem;
+            color: #c0c0c0;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #444;
+        }
+        
+        @media (max-width: 768px) {
+            header { flex-direction: column; text-align: center; }
+            .version-header { flex-direction: column; }
+            .version-actions { width: 100%; }
+            .version-actions .btn { flex: 1; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-history"></i> CV Version History</h1>
+            <div style="display: flex; gap: 10px;">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                    <i class="fas fa-dashboard"></i> Dashboard
+                </a>
+                <a href="{{ url_for('results') }}" class="btn btn-primary">
+                    <i class="fas fa-file-alt"></i> View Current CV
+                </a>
+            </div>
+        </header>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <div class="info-banner">
+            <p><i class="fas fa-info-circle"></i> Your CV is automatically saved each time it's generated or updated. You can switch between versions at any time. The most recent version is used for job applications.</p>
+        </div>
+        
+        {% if versions %}
+        <div class="versions-list">
+            {% for version in versions|reverse %}
+            <div class="version-card {% if loop.revindex0 == current_index %}active{% endif %}">
+                <div class="version-header">
+                    <div class="version-info">
+                        <div class="version-number">
+                            <i class="fas fa-file-alt"></i>
+                            Version {{ version.version_number }}
+                            {% if loop.revindex0 == current_index %}
+                            <span class="current-badge">CURRENT</span>
+                            {% endif %}
+                        </div>
+                        <div class="version-description">{{ version.description }}</div>
+                        <div class="version-timestamp">
+                            <i class="fas fa-clock"></i> {{ version.timestamp }}
+                        </div>
+                    </div>
+                    
+                    <div class="version-actions">
+                        {% if loop.revindex0 != current_index %}
+                        <a href="{{ url_for('switch_cv_version', index=loop.revindex0) }}" class="btn btn-primary">
+                            <i class="fas fa-check"></i> Use This Version
+                        </a>
+                        {% else %}
+                        <span class="btn btn-secondary" style="cursor: default; opacity: 0.6;">
+                            <i class="fas fa-check-circle"></i> Active
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="version-preview">
+                    <div class="version-preview-text">{{ version.cv[:400] }}...</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-history"></i>
+            <h3>No versions saved yet</h3>
+            <p>CV versions will appear here as you generate and update your profile</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

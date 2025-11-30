@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Generator - Transform Your Documents</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 50px; }
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .subtitle { color: #a0a0a0; font-size: 1.1rem; }
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+        .flash-messages { margin-bottom: 20px; }
+        .flash {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .flash.error {
+            background: rgba(255, 82, 82, 0.2);
+            border: 1px solid #ff5252;
+            color: #ff5252;
+        }
+        .flash.success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4caf50;
+            color: #4caf50;
+        }
+        .info-box {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .info-box h3 {
+            color: #00d4ff;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        .info-box p {
+            color: #c0c0c0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .form-group { margin-bottom: 25px; }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #e0e0e0;
+        }
+        .optional { color: #888; font-weight: 400; font-size: 0.9rem; }
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+        input::placeholder { color: #666; }
+        .file-upload {
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .file-upload:hover {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.05);
+        }
+        .file-upload i { font-size: 2.5rem; color: #00d4ff; margin-bottom: 12px; }
+        .file-upload p { color: #a0a0a0; margin-bottom: 8px; font-size: 0.95rem; }
+        .file-upload .formats { font-size: 0.85rem; color: #666; }
+        .file-upload input { display: none; }
+        .file-name {
+            margin-top: 15px;
+            padding: 10px 15px;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 8px;
+            color: #00d4ff;
+            display: none;
+        }
+        .upload-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        .upload-box h4 {
+            color: #00d4ff;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 212, 255, 0.3);
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 20px;
+            font-size: 0.95rem;
+            width: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 0;
+        }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .top-nav {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 50px;
+        }
+        .feature {
+            text-align: center;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .feature i { font-size: 2rem; margin-bottom: 15px; color: #00d4ff; }
+        .feature h3 { font-size: 1rem; margin-bottom: 8px; }
+        .feature p { font-size: 0.85rem; color: #888; }
+        .loading { display: none; text-align: center; padding: 20px; }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .features { grid-template-columns: 1fr; }
+            .upload-section { grid-template-columns: 1fr; }
+            .card { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-nav">
+            <a href="{{ url_for('jobs_manager') }}" class="btn btn-secondary">
+                <i class="fas fa-briefcase"></i> Manage Jobs
+            </a>
+        </div>
+        <header>
+            <h1><i class="fas fa-file-alt"></i> CV Generator</h1>
+            <p class="subtitle">Upload your CV and/or slides to create a professional profile</p>
+        </header>
+        <div class="card">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash {{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            
+            <div class="info-box">
+                <h3><i class="fas fa-lightbulb"></i> How it works</h3>
+                <p>Upload your existing CV to extract basic information, and optionally add presentation slides to enhance your profile with additional skills and projects. The AI will create a comprehensive CV that you can tailor to specific job applications.</p>
+            </div>
+
+            <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data" id="uploadForm">
+                <div class="form-group">
+                    <label for="name">Full Name <span class="optional">(optional - can be extracted from CV)</span></label>
+                    <input type="text" id="name" name="name" placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address <span class="optional">(optional - can be extracted from CV)</span></label>
+                    <input type="email" id="email" name="email" placeholder="john@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number <span class="optional">(optional)</span></label>
+                    <input type="tel" id="phone" name="phone" placeholder="+1 234 567 8900">
+                </div>
+                <div class="form-group">
+                    <label for="target_role">Target Role <span class="optional">(optional)</span></label>
+                    <input type="text" id="target_role" name="target_role" placeholder="e.g. Software Developer, Data Analyst">
+                </div>
+                
+                <div class="upload-section">
+                    <div class="upload-box">
+                        <h4><i class="fas fa-file-pdf"></i> Your Existing CV</h4>
+                        <div class="file-upload" id="cvDropZone">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Upload your CV</p>
+                            <span class="formats">PDF or PPTX</span>
+                            <input type="file" id="cv_file" name="cv_file" accept=".pdf,.pptx">
+                            <div class="file-name" id="cvFileName"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="upload-box">
+                        <h4><i class="fas fa-presentation"></i> Additional Slides (Optional)</h4>
+                        <div class="file-upload" id="slidesDropZone">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Upload slides</p>
+                            <span class="formats">PDF or PPTX</span>
+                            <input type="file" id="slides_file" name="slides_file" accept=".pdf,.pptx">
+                            <div class="file-name" id="slidesFileName"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    <i class="fas fa-magic"></i> Generate My CV
+                </button>
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Analyzing your documents and generating CV...</p>
+                </div>
+            </form>
+        </div>
+        <div class="features">
+            <div class="feature">
+                <i class="fas fa-brain"></i>
+                <h3>AI-Powered</h3>
+                <p>Smart extraction from your existing CV and slides</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-briefcase"></i>
+                <h3>Job Management</h3>
+                <p>Save job descriptions and tailor your CV</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-file-signature"></i>
+                <h3>Auto-Tailoring</h3>
+                <p>Customize CV for each application</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        function setupDropZone(dropZoneId, fileInputId, fileNameId) {
+            const dropZone = document.getElementById(dropZoneId);
+            const fileInput = document.getElementById(fileInputId);
+            const fileName = document.getElementById(fileNameId);
+            
+            dropZone.addEventListener('click', () => fileInput.click());
+            
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.style.borderColor = '#00d4ff';
+            });
+            
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+            });
+            
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                if (e.dataTransfer.files.length) {
+                    fileInput.files = e.dataTransfer.files;
+                    updateFileName(fileInput, fileName);
+                }
+            });
+            
+            fileInput.addEventListener('change', () => updateFileName(fileInput, fileName));
+        }
+        
+        function updateFileName(input, displayElement) {
+            if (input.files.length) {
+                displayElement.textContent = input.files[0].name;
+                displayElement.style.display = 'block';
+            }
+        }
+        
+        setupDropZone('cvDropZone', 'cv_file', 'cvFileName');
+        setupDropZone('slidesDropZone', 'slides_file', 'slidesFileName');
+        
+        const form = document.getElementById('uploadForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+        
+        form.addEventListener('submit', () => {
+            submitBtn.disabled = true;
+            submitBtn.style.display = 'none';
+            loading.style.display = 'block';
+        });
+    </script>
+</body>
+</html>

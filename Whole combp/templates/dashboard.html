@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - CV Manager</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        h1 {
+            font-size: 2.2rem;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header-info {
+            color: #c0c0c0;
+            font-size: 1rem;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            color: #fff;
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+        .stat-icon.blue { background: rgba(0, 212, 255, 0.15); color: #00d4ff; }
+        .stat-icon.purple { background: rgba(123, 44, 191, 0.15); color: #7b2cbf; }
+        .stat-icon.green { background: rgba(76, 175, 80, 0.15); color: #4caf50; }
+        .stat-icon.orange { background: rgba(255, 152, 0, 0.15); color: #ff9800; }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            font-size: 0.95rem;
+            color: #888;
+            margin-bottom: 15px;
+        }
+        .stat-action {
+            margin-top: 15px;
+        }
+        
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .skill-badge {
+            background: rgba(0, 212, 255, 0.15);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            color: #00d4ff;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .skill-badge:hover {
+            background: rgba(0, 212, 255, 0.25);
+            transform: translateY(-2px);
+        }
+        .skill-badge .delete-skill {
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            color: #ff5252;
+        }
+        .skill-badge:hover .delete-skill {
+            opacity: 1;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .action-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: #fff;
+        }
+        .action-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(0, 212, 255, 0.3);
+            transform: translateY(-3px);
+        }
+        .action-card i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #00d4ff;
+        }
+        .action-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        .action-card p {
+            font-size: 0.85rem;
+            color: #888;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #444;
+        }
+        
+        @media (max-width: 768px) {
+            header { flex-direction: column; text-align: center; }
+            .section { padding: 25px; }
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1><i class="fas fa-dashboard"></i> Dashboard</h1>
+                <div class="header-info">Welcome back, {{ user_info.name }}!</div>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <a href="{{ url_for('results') }}" class="btn btn-primary">
+                    <i class="fas fa-file-alt"></i> View Current CV
+                </a>
+                <a href="{{ url_for('reset') }}" class="btn btn-secondary">
+                    <i class="fas fa-redo"></i> Start Over
+                </a>
+            </div>
+        </header>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="stat-value">{{ total_versions }}</div>
+                <div class="stat-label">CV Versions</div>
+                <div class="stat-action">
+                    <a href="{{ url_for('cv_versions') }}" class="btn btn-secondary" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-history"></i> View History
+                    </a>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon purple">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <div class="stat-value">{{ job_count }}</div>
+                <div class="stat-label">Saved Jobs</div>
+                <div class="stat-action">
+                    <a href="{{ url_for('jobs_manager') }}" class="btn btn-secondary" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-list"></i> Manage Jobs
+                    </a>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <div class="stat-value">{{ enhancement_count }}</div>
+                <div class="stat-label">Materials Added</div>
+                <div class="stat-action">
+                    <a href="{{ url_for('enhance_profile') }}" class="btn btn-secondary" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-plus"></i> Add More
+                    </a>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon orange">
+                    <i class="fas fa-award"></i>
+                </div>
+                <div class="stat-value">{{ skills|length }}</div>
+                <div class="stat-label">Total Skills</div>
+                <div class="stat-action">
+                    <span style="font-size: 0.85rem; color: #888;">From all materials</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-award"></i> Your Skills
+                </h2>
+                <a href="{{ url_for('enhance_profile') }}" class="btn btn-secondary">
+                    <i class="fas fa-plus"></i> Add More Skills
+                </a>
+            </div>
+            
+            {% if skills %}
+            <!-- Technical Skills -->
+            {% if skills_by_category.technical %}
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: #00d4ff; font-size: 1.1rem; margin-bottom: 15px;">
+                    <i class="fas fa-code"></i> Technical Skills
+                </h3>
+                <div class="skills-container">
+                    {% for skill in skills_by_category.technical %}
+                    <span class="skill-badge" style="background: rgba(0, 212, 255, 0.15); border-color: rgba(0, 212, 255, 0.3); color: #00d4ff;">
+                        {{ skill }}
+                        <i class="fas fa-times delete-skill" onclick="deleteSkill('{{ skill }}')"></i>
+                    </span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Tools & Technologies -->
+            {% if skills_by_category.tools %}
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: #7b2cbf; font-size: 1.1rem; margin-bottom: 15px;">
+                    <i class="fas fa-tools"></i> Tools & Technologies
+                </h3>
+                <div class="skills-container">
+                    {% for skill in skills_by_category.tools %}
+                    <span class="skill-badge" style="background: rgba(123, 44, 191, 0.15); border-color: rgba(123, 44, 191, 0.3); color: #7b2cbf;">
+                        {{ skill }}
+                        <i class="fas fa-times delete-skill" onclick="deleteSkill('{{ skill }}')"></i>
+                    </span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Methodologies -->
+            {% if skills_by_category.methodologies %}
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: #4caf50; font-size: 1.1rem; margin-bottom: 15px;">
+                    <i class="fas fa-project-diagram"></i> Methodologies
+                </h3>
+                <div class="skills-container">
+                    {% for skill in skills_by_category.methodologies %}
+                    <span class="skill-badge" style="background: rgba(76, 175, 80, 0.15); border-color: rgba(76, 175, 80, 0.3); color: #4caf50;">
+                        {{ skill }}
+                        <i class="fas fa-times delete-skill" onclick="deleteSkill('{{ skill }}')"></i>
+                    </span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Soft Skills -->
+            {% if skills_by_category.soft %}
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: #ff9800; font-size: 1.1rem; margin-bottom: 15px;">
+                    <i class="fas fa-users"></i> Soft Skills
+                </h3>
+                <div class="skills-container">
+                    {% for skill in skills_by_category.soft %}
+                    <span class="skill-badge" style="background: rgba(255, 152, 0, 0.15); border-color: rgba(255, 152, 0, 0.3); color: #ff9800;">
+                        {{ skill }}
+                        <i class="fas fa-times delete-skill" onclick="deleteSkill('{{ skill }}')"></i>
+                    </span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- All Other Skills -->
+            {% if skills|length > (skills_by_category.technical|length + skills_by_category.tools|length + skills_by_category.methodologies|length + skills_by_category.soft|length) %}
+            <div style="margin-bottom: 20px;">
+                <h3 style="color: #e0e0e0; font-size: 1.1rem; margin-bottom: 15px;">
+                    <i class="fas fa-star"></i> Additional Skills
+                </h3>
+                <div class="skills-container">
+                    {% for skill in skills %}
+                    {% if skill not in skills_by_category.technical and skill not in skills_by_category.tools and skill not in skills_by_category.methodologies and skill not in skills_by_category.soft %}
+                    <span class="skill-badge">
+                        {{ skill }}
+                        <i class="fas fa-times delete-skill" onclick="deleteSkill('{{ skill }}')"></i>
+                    </span>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <div style="margin-top: 20px; padding: 15px; background: rgba(0, 212, 255, 0.05); border-radius: 10px; border: 1px solid rgba(0, 212, 255, 0.2);">
+                <p style="color: #c0c0c0; font-size: 0.9rem;">
+                    <i class="fas fa-info-circle" style="color: #00d4ff;"></i>
+                    <strong style="color: #00d4ff;">{{ skills|length }} total skills</strong> extracted from your CV and all uploaded materials. Skills are automatically categorized and updated when you add new materials.
+                </p>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-award"></i>
+                <p>No skills extracted yet</p>
+                <p style="font-size: 0.9rem; margin-top: 10px;">Add materials to build your skills profile</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-rocket"></i> Quick Actions
+                </h2>
+            </div>
+            
+            <div class="quick-actions">
+                <a href="{{ url_for('enhance_profile') }}" class="action-card">
+                    <i class="fas fa-file-upload"></i>
+                    <h3>Add Materials</h3>
+                    <p>Upload more slides, projects, or certificates</p>
+                </a>
+                
+                <a href="{{ url_for('job_recommendations') }}" class="action-card">
+                    <i class="fas fa-lightbulb"></i>
+                    <h3>Job Recommendations</h3>
+                    <p>AI-powered job matching based on your profile</p>
+                </a>
+                
+                <a href="{{ url_for('jobs_manager') }}" class="action-card">
+                    <i class="fas fa-briefcase"></i>
+                    <h3>Manage Jobs</h3>
+                    <p>View and organize your saved jobs</p>
+                </a>
+                
+                <a href="{{ url_for('cv_versions') }}" class="action-card">
+                    <i class="fas fa-history"></i>
+                    <h3>CV History</h3>
+                    <p>View and switch between versions</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
